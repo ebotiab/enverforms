@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section>
+        <div>
+            <h2>{{ survey.title}}</h2>
+            <div class="description"><h3>{{ survey.description }}</h3></div>
+
+
+        <form action="{{url_for('main.post_answer', survey_id=survey.id)}}" method="post">
+            <ul class="answer_survey">
+                {% for question in survey.questions %}
+                    {% include 'question.html' %}
+                {% endfor %}
+            </ul>
+
+            <div>
+                <input  class="btn2" type="submit" value="submit survey" />
+            </div>
+        </form>
+    </section>
+{% endblock %}

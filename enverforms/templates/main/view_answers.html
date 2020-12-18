@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <style>
+        .answers {
+            display: flex;
+            justify-content: center;
+            background-color: white;
+        }
+
+    </style>
+    <h2>Survey answers</h2>
+
+    {% for question in survey.questions %}
+        <p class="question" id="{{'question'+question.position|string}}"></p>
+        <div class="answers" id="{{question.position}}"></div>
+    {% endfor %}
+
+</section>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+
+    <script>
+    var answers = JSON.parse({{ answers | tojson}})
+    var qtypes = JSON.parse({{ qtypes | tojson}})
+    var qstatements = JSON.parse({{ qstatements | tojson}})
+    
+    // code extracted from https://developers.google.com/chart/interactive/docs/basic_multiple_charts
+
+    // Load Charts and the corechart and barchart packages.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Draw the pie chart and bar chart when Charts is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        for (var i = 0; i < qtypes.length; i++) {
+            answer = answers[i]
+            if (qtypes[i] === "1") {
+                ul = $(document.createElement('ul'));
+                p = $(document.createElement('p'));
+                p.text(qstatements[i]);
+                ul.append(p);
+                for (var j = 0; j < answer.length; j++) {
+                    b = $(document.createElement('li'));
+                    b.text(answer[j])
+                    ul.append(b);
+                }
+                $("#"+i).append(ul);
+
+            } else if (qtypes[i]==="2"){
+                var data = google.visualization.arrayToDataTable([["x"]].concat(answer));
+                var options = {
+                    title: qstatements[i],
+                    titleTextStyle: { fontSize: 28 },
+                    legend: { position: 'none' },
+                };
+                var chart = new google.visualization.Histogram(document.getElementById(i));
+                chart.draw(data, options);
+
+            } else if (qtypes[i] === "3") {
+                var data = new google.visualization.arrayToDataTable([["x", "y"]].concat(answer));
+                var piechart_options = {
+                    title: qstatements[i],
+                    titleTextStyle: { fontSize: 28 },
+                    width: 800,
+                    height: 500
+                };
+                var piechart = new google.visualization.PieChart(document.getElementById(i));
+                piechart.draw(data, piechart_options);
+
+            } else {
+                var data = new google.visualization.arrayToDataTable([["x", "y"]].concat(answer));
+                var barchart_options = {
+                    title: qstatements[i],
+                    titleTextStyle:{ fontSize: 28},
+                    width: 800,
+                    height: 500,
+                    legend: 'none'
+                };
+                var barchart = new google.visualization.BarChart(document.getElementById(i));
+                barchart.draw(data, barchart_options);
+            }
+        }
+    }
+    </script>
+
+{% endblock %}

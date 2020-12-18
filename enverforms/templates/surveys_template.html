@@ -1,0 +1,61 @@
+<div class="surveys">
+
+    {% for survey in surveys|reverse %}
+
+        <div class="survey">
+            <div class="title"><h1>{{survey.title}}</h1></div>
+
+            <div class="metadata">
+                <div class="description">{{survey.description }}</div>
+                <!-- <span class="author">{{ survey.user.name }}</span> -->
+                <div class="date">Created on {{survey.timestamp }}</div>
+                {% if survey.state == survey.state.__class__.new %}
+                    <div class="state"> The survey is new</div>
+                {% endif %}
+                {% if survey.state == survey.state.__class__.online %}
+                    <div class="state"> The survey is online</div>
+                {% endif %}
+                {% if survey.state == survey.state.__class__.closed %}
+                    <div class="state"> The survey is closed</div>
+                {% endif %}
+            </div>
+
+            {% if survey.state == survey.state.__class__.new or survey.state == survey.state.__class__.closed %}
+            <form action="{{ url_for('main.change_state') }}" method="post">
+                    <div class="to_hide">
+                        <input type="textarea" name="survey_id" value="{{survey.id}}">
+                        <input type="textarea" name="state" value="online">
+                    </div>
+                    <input class="btn3" type="submit" value="Change state to online">   
+            </form>
+            {% endif %}
+            {% if survey.state == survey.state.__class__.online %}
+            <form action="{{ url_for('main.change_state') }}" method="post">
+                    <div class="to_hide" >
+                        <input type="textarea" name="survey_id" value="{{survey.id}}">
+                        <input type="textarea" name="state" value="closed">
+                    </div>
+                    <input class="btn3" type="submit" value="Change state to closed">
+            </form>
+            {% endif %}
+            <p></p>
+
+            <div class="hiper-link">
+            
+            {% if survey.state == survey.state.__class__.new %}
+                <a href="{{ url_for('main.edit_survey', survey_id=survey.id) }}">Edit the survey</a>
+            {% endif %}
+            {% if survey.state == survey.state.__class__.online %}
+                <a href="{{ url_for('main.answer', survey_id=survey.id) }}">Fill the survey</a>
+            {% endif %}
+            {% if survey.state != survey.state.__class__.new %}
+                <a href="{{ url_for('main.view_answers', survey_id=survey.id) }}">View answers</a>
+            {% endif %}
+
+            <a class="remove" href="{{ url_for('main.remove_survey', survey_id=survey.id) }}">Remove the survey</a>
+
+            </div>
+        </div>
+
+    {% endfor %}
+</div>

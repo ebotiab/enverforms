@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <form action="{{ url_for('main.post_survey') }}" method="post">
+        <div id="to_hide">
+            <input type="textarea" name="survey_id" value="{{survey.id}}">
+        </div>
+        <h2>Edit the general information for this survey</h2>
+        <div>
+            <p>
+                <input class="survey_box" type="textarea" id="title" name="title" placeholder="Survey Title" value="{{survey.title}}">
+            </p>
+            <p>
+                <textarea class="survey_box" name="description" cols="230" rows="3">{{survey.description}}</textarea>
+            </p>
+        </div>
+        <h2>Edit your questions for this survey</h2>
+        <div id="questionnaire">
+            {% for question in survey.questions %}
+                <div id="{{'question'+(question.position+1)|string}}">
+                    
+                    <textarea class="survey_box" name="{{'statement'+(question.position+1)|string}}" cols="170" rows="1" placeholder="Question" 
+                    id="{{'statement'+(question.position+1)|string}}">{{question.statement}}</textarea>
+
+                    <select class="type_selector" onchange="showOptions(this);" name="{{'questiontype'+(question.position+1)|string}}">
+                        <option value="1">Text answer</option>
+                        <option value="2">Integer answer</option>
+                        <option value="3">Unique choice answer</option>
+                        <option value="4">Multiple choice answer</option>
+                    </select>
+                    
+                    <ol>
+                        {% if question.type=="1" or question.type=="2" %}
+                            <ol>
+                                <textarea id ="survey_box_mini" class="{{question.type}}"  name="{{'option'+(question.position+1)|string+'_1'}}" cols="50" rows="1" placeholder="Option"></textarea>
+                            </ol>
+                        {% endif %}
+                        {% if question.type=="3" or question.type=="4" %}
+                            {% for option in question.options %}
+                                <ol>
+                                    <textarea  id ="survey_box_mini" class="{{question.type}}" name="{{'option'+(question.position+1)|string+'_'+(option.position+1)|string}}" cols="50" rows="1"
+                                        placeholder="Option">{{option.statement}}</textarea>
+                                </ol>
+                            {% endfor %}
+                        {% endif %}
+                        <button onclick="appendOption(this)" class="btn3" id="{{'addOption'+(question.position+1)|string}}"type="button">Add option</button>
+                        <button onclick="popOption(this)" class="btn3" id="removeOption1" type="button">Remove option</button>
+
+                </div>
+            {% endfor %}
+
+            <button onclick="appendQuestion(this)" class="btn3" id="addQuestion" type="button">Add question</button>
+            <button onclick="popQuestion(this)" class="btn3" id="removeQuestion" type="button">Remove question</button>
+                
+        </div>
+
+        <div><input class="btn2" type="submit" value="Save changes" /></div>
+        <p></p>
+    
+    </form>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='edit_survey.js') }}"></script>
+
+{% endblock %}
+

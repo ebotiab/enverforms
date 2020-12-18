@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <form action="{{ url_for('main.post_survey') }}" method="post">
+        <h2>Add information for this survey</h2>
+        <div>
+            <p>
+                <input type="textarea" class="survey_box" name="title" placeholder="Survey Title">
+            </p>
+            <p>
+                <textarea class="survey_box" name="description" cols="230" rows="3"
+                        placeholder="Write an optional description of the survey"></textarea>
+            </p>
+        </div>
+        <h2>Add your questions for this survey</h2>
+        <div id="questionnaire">
+            <div id="question1">
+                    <textarea class="survey_box" name="statement1" cols="170" rows="1"
+                            placeholder="Question" id="statement1">
+                    </textarea>
+
+                    <select class="type_selector" onchange="showOptions(this);" name="questiontype1">
+                        <option value="1">Text answer</option>
+                        <option value="2">Integer answer</option>
+                        <option value="3">Unique choice answer</option>
+                        <option value="4">Multiple choice answer</option>
+                    </select>
+
+                    <ol>
+                        <ol>
+                            <textarea class="survey_box" name="option1_1" cols="50" rows="1" 
+                            placeholder="Option"></textarea>
+                        </ol>
+                        <button onclick="appendOption(this)" class="btn3" id="addOption1" type="button">Add option</button>
+                        <button onclick="popOption(this)"  class="btn3" id="removeOption1" type="button">Remove option</button>
+                    </ol>
+                    
+            </div>
+
+            <button onclick="appendQuestion(this)" class="btn3" id="addQuestion" type="button">Add question</button>
+            <button onclick="popQuestion(this)" class="btn3" id="removeQuestion" type="button">Remove question</button>
+
+        </div>
+        <div><input class="btn2" type="submit" value="submit survey" /></div>
+        <p></p>
+    </form>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='add_survey.js') }}"></script>
+    
+{% endblock %}
+
+

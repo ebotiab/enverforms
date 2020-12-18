@@ -1,0 +1,23 @@
+<li>
+    <p>{{ question.statement }}</p>
+</li>
+
+{% if question.type=="1" %}
+    <input type="text" name="{{question.position}}">
+{% endif %}
+{% if question.type=="2" %}
+    <input type="number" name="{{question.position}}">
+{% endif %}
+{% if question.type=="3" %}
+    {% for option in question.options %}
+        <input type="radio" name="{{question.position}}" value="{{ option.position }}">
+        <label for="{{ option.position }}">{{ option.statement }}</label><br>
+    {% endfor %}
+
+{% endif %}
+{% if question.type=="4" %}
+    {% for option in question.options %}
+        <input type="checkbox" name="{{question.position}}" value="{{ option.position }}">
+        <label for="{{ option.position }}"> {{ option.statement }}</label><br>
+    {% endfor %}
+{% endif %}
